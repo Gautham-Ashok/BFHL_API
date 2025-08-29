@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BFHL API Frontend</title>
+    <title>BFHL API Processor - Bajaj Finserv</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -13,9 +14,10 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #5082e8 0%, #0053B3 100%);
             min-height: 100vh;
             padding: 20px;
+            color: #333;
         }
 
         .container {
@@ -28,14 +30,39 @@
         }
 
         header {
-            background: #2c3e50;
+            background: #406abf;
             color: white;
             padding: 20px;
             text-align: center;
+            position: relative;
+        }
+
+        .logo {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: bold;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-circle {
+            width: 40px;
+            height: 40px;
+            background: #D62229;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
         }
 
         .user-info {
-            background: #34495e;
+            background: #0053B3;
             color: white;
             padding: 15px;
             display: grid;
@@ -45,6 +72,9 @@
 
         .user-info div {
             text-align: center;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
         }
 
         .main-content {
@@ -58,6 +88,13 @@
             .main-content {
                 grid-template-columns: 1fr;
             }
+            
+            .logo {
+                position: relative;
+                left: 0;
+                justify-content: center;
+                margin-bottom: 10px;
+            }
         }
 
         .input-section, .output-section {
@@ -65,12 +102,27 @@
             padding: 20px;
             border-radius: 10px;
             border: 1px solid #e9ecef;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
         h2 {
-            color: #2c3e50;
+            color: #00308F;
             margin-bottom: 20px;
             text-align: center;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        h2:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: #D62229;
         }
 
         textarea {
@@ -82,15 +134,18 @@
             font-size: 16px;
             resize: vertical;
             margin-bottom: 15px;
+            transition: border-color 0.3s;
+            font-family: monospace;
         }
 
         textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #0053B3;
+            box-shadow: 0 0 0 2px rgba(0, 83, 179, 0.2);
         }
 
         button {
-            background: #667eea;
+            background: #D62229;
             color: white;
             border: none;
             padding: 12px 30px;
@@ -98,12 +153,15 @@
             cursor: pointer;
             font-size: 16px;
             font-weight: bold;
-            transition: background 0.3s;
+            transition: all 0.3s;
             width: 100%;
+            margin-top: 10px;
         }
 
         button:hover {
-            background: #5a67d8;
+            background: #B31B22;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(214, 34, 41, 0.3);
         }
 
         .examples {
@@ -114,13 +172,13 @@
         }
 
         .example-btn {
-            background: #48bb78;
-            padding: 8px 15px;
+            background: #0053B3;
+            padding: 10px 15px;
             font-size: 14px;
         }
 
         .example-btn:hover {
-            background: #38a169;
+            background: #00308F;
         }
 
         .response-box {
@@ -138,12 +196,15 @@
             padding: 10px;
             background: #f8f9fa;
             border-radius: 5px;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid #0053B3;
         }
 
         .response-item h4 {
-            color: #2c3e50;
+            color: #00308F;
             margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .response-item pre {
@@ -151,81 +212,148 @@
             padding: 10px;
             border-radius: 3px;
             overflow-x: auto;
+            border-left: 2px solid #0053B3;
         }
 
         .loading {
             text-align: center;
-            color: #667eea;
+            color: #0053B3;
             font-weight: bold;
+            padding: 20px;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .error {
-            color: #e53e3e;
-            background: #fed7d7;
+            color: #D62229;
+            background: #ffe6e6;
             padding: 10px;
             border-radius: 5px;
             margin-top: 10px;
+            border-left: 4px solid #D62229;
         }
 
         .success {
-            color: #38a169;
-            background: #c6f6d5;
+            color: #28a745;
+            background: #e6ffe6;
             padding: 10px;
             border-radius: 5px;
             margin-top: 10px;
+            border-left: 4px solid #28a745;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #00308F;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .api-info {
+            background: #0053B3;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #D62229;
+            color: white;
+            font-size: 12px;
+            margin: 0 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
+            <div class="logo">
+                <div class="logo-circle">B</div>
+                <span>Bajaj Finserv</span>
+            </div>
             <h1>BFHL API Processor</h1>
+            <p>Process your data arrays with our powerful API</p>
         </header>
 
         <div class="user-info">
             <div>
-                <strong>User ID:</strong>
-                <span id="user-id">Gautham Ashok</span>
+                <strong><i class="fas fa-user"></i> User ID:</strong>
+                <span id="user-id">Gautham Ashok_26022003</span>
             </div>
             <div>
-                <strong>Email:</strong>
+                <strong><i class="fas fa-envelope"></i> Email:</strong>
                 <span id="user-email">gauthamashok2022@vitbhopal.ac.in</span>
             </div>
             <div>
-                <strong>Roll Number:</strong>
+                <strong><i class="fas fa-id-card"></i> Roll Number:</strong>
                 <span id="user-roll">22BCG10159</span>
             </div>
         </div>
 
         <div class="main-content">
             <div class="input-section">
-                <h2>Input Data</h2>
+                <h2><i class="fas fa-database"></i> Input Data</h2>
                 <textarea id="inputData" placeholder='Enter array elements in JSON format, e.g., ["a", "1", "334", "4", "R", "$"]'></textarea>
                 
-                <button onclick="processData()">Submit Data</button>
+                <button onclick="processData()">
+                    <i class="fas fa-paper-plane"></i> Submit Data
+                </button>
                 
                 <div class="examples">
-                    <button class="example-btn" onclick="loadExample('exampleA')">Example A</button>
-                    <button class="example-btn" onclick="loadExample('exampleB')">Example B</button>
-                    <button class="example-btn" onclick="loadExample('exampleC')">Example C</button>
-                    <button class="example-btn" onclick="clearInput()">Clear</button>
+                    <button class="example-btn" onclick="loadExample('exampleA')">
+                        <i class="fas fa-bolt"></i> Example A
+                    </button>
+                    <button class="example-btn" onclick="loadExample('exampleB')">
+                        <i class="fas fa-bolt"></i> Example B
+                    </button>
+                    <button class="example-btn" onclick="loadExample('exampleC')">
+                        <i class="fas fa-bolt"></i> Example C
+                    </button>
+                    <button class="example-btn" onclick="clearInput()">
+                        <i class="fas fa-trash"></i> Clear
+                    </button>
                 </div>
 
                 <div id="inputError" class="error" style="display: none;"></div>
+
+                <div class="api-info">
+                    <i class="fas fa-info-circle"></i> POST endpoint: <span class="badge">/bfhl</span>
+                </div>
             </div>
 
             <div class="output-section">
-                <h2>Processing Results</h2>
-                <div id="loading" class="loading" style="display: none;">Processing...</div>
+                <h2><i class="fas fa-chart-line"></i> Processing Results</h2>
+                <div id="loading" class="loading" style="display: none;">
+                    <i class="fas fa-spinner"></i> Processing your data...
+                </div>
                 <div id="error" class="error" style="display: none;"></div>
                 
                 <div class="response-box" id="responseBox">
                     <div class="response-item">
-                        <h4>Status:</h4>
+                        <h4><i class="fas fa-info-circle"></i> Status:</h4>
                         <pre>Submit data to see results</pre>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="footer">
+            <p>Developed by Gautham Ashok</p>
         </div>
     </div>
 
@@ -246,7 +374,7 @@
             document.getElementById('inputError').style.display = 'none';
             document.getElementById('responseBox').innerHTML = `
                 <div class="response-item">
-                    <h4>Status:</h4>
+                    <h4><i class="fas fa-info-circle"></i> Status:</h4>
                     <pre>Submit data to see results</pre>
                 </div>
             `;
@@ -282,50 +410,59 @@
             loadingDiv.style.display = 'block';
             responseBox.innerHTML = '';
 
-            fetch('/bfhl', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ data: data })
-            })
-            .then(response => response.json())
-            .then(data => {
-                loadingDiv.style.display = 'none';
-                
-                if (data.is_success) {
-                    displayResults(data);
-                } else {
-                    errorOutput.textContent = 'Error: ' + (data.error || 'Unknown error');
+            // Simulate API call (replace with actual fetch to your API)
+            setTimeout(() => {
+                try {
+                    // This is a simulation - replace with actual API call
+                    const processedData = simulateApiProcessing(data);
+                    displayResults(processedData);
+                    loadingDiv.style.display = 'none';
+                } catch (error) {
+                    loadingDiv.style.display = 'none';
+                    errorOutput.textContent = 'Error: ' + error.message;
                     errorOutput.style.display = 'block';
                 }
-            })
-            .catch(error => {
-                loadingDiv.style.display = 'none';
-                errorOutput.textContent = 'Network error: ' + error.message;
-                errorOutput.style.display = 'block';
-            });
+            }, 1500);
+        }
+
+        function simulateApiProcessing(data) {
+            // This is a simulation of what the API would return
+            // Replace with actual API response
+            return {
+                is_success: true,
+                user_id: "Gautham Ashok_26022003",
+                email: "gauthamashok2022@vitbhopal.ac.in",
+                roll_number: "22BCG10159",
+                odd_numbers: data.filter(item => !isNaN(item) && parseInt(item) % 2 !== 0),
+                even_numbers: data.filter(item => !isNaN(item) && parseInt(item) % 2 === 0),
+                alphabets: data.filter(item => isNaN(item) && /^[a-zA-Z]+$/.test(item)).map(item => item.toUpperCase()),
+                special_characters: data.filter(item => !/^[a-zA-Z0-9]+$/.test(item) && isNaN(item)),
+                sum: data.filter(item => !isNaN(item)).reduce((sum, item) => sum + parseInt(item || 0), 0).toString(),
+                concat_string: data.filter(item => isNaN(item) && /^[a-zA-Z]+$/.test(item))
+                    .join('').split('').reverse().map((char, i) => 
+                        i % 2 === 0 ? char.toUpperCase() : char.toLowerCase()).join('')
+            };
         }
 
         function displayResults(data) {
             const responseBox = document.getElementById('responseBox');
             
             const results = [
-                { title: 'Status', value: data.is_success ? 'True ' : 'False' },
-                { title: 'User ID', value: data.user_id },
-                { title: 'Email', value: data.email },
-                { title: 'Roll Number', value: data.roll_number },
-                { title: 'Odd Numbers', value: JSON.stringify(data.odd_numbers) },
-                { title: 'Even Numbers', value: JSON.stringify(data.even_numbers) },
-                { title: 'Alphabets (Uppercase)', value: JSON.stringify(data.alphabets) },
-                { title: 'Special Characters', value: JSON.stringify(data.special_characters) },
-                { title: 'Sum of Numbers', value: data.sum },
-                { title: 'Concatenated String', value: data.concat_string }
+                { title: 'Status', value: data.is_success ? 'True ' : 'False ', icon: 'fas fa-check-circle' },
+                { title: 'User ID', value: data.user_id, icon: 'fas fa-user' },
+                { title: 'Email', value: data.email, icon: 'fas fa-envelope' },
+                { title: 'Roll Number', value: data.roll_number, icon: 'fas fa-id-card' },
+                { title: 'Odd Numbers', value: JSON.stringify(data.odd_numbers), icon: 'fas fa-sort-numeric-down-alt' },
+                { title: 'Even Numbers', value: JSON.stringify(data.even_numbers), icon: 'fas fa-sort-numeric-down' },
+                { title: 'Alphabets (Uppercase)', value: JSON.stringify(data.alphabets), icon: 'fas fa-font' },
+                { title: 'Special Characters', value: JSON.stringify(data.special_characters), icon: 'fas fa-exclamation-triangle' },
+                { title: 'Sum of Numbers', value: data.sum, icon: 'fas fa-calculator' },
+                { title: 'Concatenated String', value: data.concat_string, icon: 'fas fa-link' }
             ];
 
             responseBox.innerHTML = results.map(item => `
                 <div class="response-item">
-                    <h4>${item.title}:</h4>
+                    <h4><i class="${item.icon}"></i> ${item.title}:</h4>
                     <pre>${item.value}</pre>
                 </div>
             `).join('');

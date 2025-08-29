@@ -10,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static('public')); 
 
-
+//User Details
 const USER_INFO = {
   full_name: 'Gautham Ashok',       
   email: 'gauthamashok2022@vitbhopal.ac.in',        
@@ -88,7 +88,7 @@ const processData = (data) => {
   return result;
 };
 
-// POST endpoint - Main route
+// POST Route
 app.post('/bfhl', (req, res) => {
   try {
     const { data } = req.body;
@@ -126,7 +126,7 @@ app.post('/bfhl', (req, res) => {
   }
 });
 
-// GET endpoint for testing
+//Backend Route
 app.get('/bfhl', (req, res) => {
   res.status(200).json({
     operation_code: 1,
@@ -135,12 +135,12 @@ app.get('/bfhl', (req, res) => {
   });
 });
 
-// Serve frontend
+// Frontend Route
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Health check endpoint
+// Backend Health Check
 app.get('/health', (req, res) => {
   res.status(200).json({ 
     message: 'BFHL API is running',
@@ -152,9 +152,9 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Start server
+// Main Code
 app.listen(PORT, () => {
-  console.log(`🚀 Server is running on port ${PORT}`);
-  console.log(`📍 Frontend: http://localhost:${PORT}`);
-  console.log(`📍 API: http://localhost:${PORT}/bfhl`);
+  console.log(`Server is running on port ${PORT}`);
+  console.log(`Frontend: http://localhost:${PORT}`);
+  console.log(`API: http://localhost:${PORT}/bfhl`);
 });
